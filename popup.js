@@ -36,6 +36,7 @@ document.getElementById('add').addEventListener('click', function () {
             '<button btn-cancel>取消</button>'
         );
         insert.querySelector('[btn-confirm]').addEventListener('click', function () {
+            insert.setAttribute('item-rules', '');
             saveRules();
             initDOM();
         });
@@ -47,7 +48,7 @@ document.getElementById('add').addEventListener('click', function () {
 });
 
 function modifyRule() {
-    saveRules(true);
+    saveRules();
     var insert = document.getElementById('rule_insert');
     initDOM();
     insert && document.getElementById('rules').appendChild(insert);
@@ -56,28 +57,36 @@ function modifyRule() {
 function deleteRule(id) {
     var tar = document.querySelector('[data-id="' + id + '"]');
     tar && tar.parentNode.removeChild(tar);
-    saveRules(true);
+    saveRules();
     var insert = document.getElementById('rule_insert');
     initDOM();
     insert && document.getElementById('rules').appendChild(insert);
+    // var tar = document.querySelector('[data-id="' + id + '"]');
+    // tar && tar.parentNode.removeChild(tar);
+    // saveRules(true);
+    // var insert = document.getElementById('rule_insert');
+    // initDOM();
+    // insert && document.getElementById('rules').appendChild(insert);
 }
 
-function saveRules(avoidInsert) {
-    var rules = document.getElementById('rules');
-    var lis = Array.from(rules.getElementsByTagName('li'));
-    var userSettings = (lis.map(function (item) {
-        if (avoidInsert && 'rule_insert' === item.id) {
-            return undefined;
-        }
-        return {
-            id: item.dataset['id'],
-            regex: item.querySelector('[name=regex]').value,
-            url: item.querySelector('[name=url]').value,
-        };
-    }) || []).filter(function (item) {
-        return item;
-    });
-    localStorage.setItem('userSettings', JSON.stringify(userSettings));
+function saveRules() {
+    var userSettings = dataFromDOM();
+    saveToStore(userSettings);
+    // var rules = document.getElementById('rules');
+    // var lis = Array.from(rules.getElementsByTagName('li'));
+    // var userSettings = (lis.map(function (item) {
+    //     if (avoidInsert && 'rule_insert' === item.id) {
+    //         return undefined;
+    //     }
+    //     return {
+    //         id: item.dataset['id'],
+    //         regex: item.querySelector('[name=regex]').value,
+    //         url: item.querySelector('[name=url]').value,
+    //     };
+    // }) || []).filter(function (item) {
+    //     return item;
+    // });
+    // localStorage.setItem('userSettings', JSON.stringify(userSettings));
 }
 
 function initDOM() {
@@ -178,10 +187,10 @@ function rebindEvent() {
             $delete.removeEventListener('click');
 
             $modify.addEventListener('click', function () {
-                // modifyRule();
+                modifyRule();
             });
             $delete.addEventListener('click', function () {
-                // deleteRule(id);
+                deleteRule(id);
             });
         });
     }
