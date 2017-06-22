@@ -37,6 +37,7 @@ document.getElementById('add').addEventListener('click', function () {
         );
         insert.querySelector('[btn-confirm]').addEventListener('click', function () {
             insert.setAttribute('item-rules', '');
+            insert.id = '';
             saveRules();
             initDOM();
         });
@@ -49,24 +50,19 @@ document.getElementById('add').addEventListener('click', function () {
 
 function modifyRule() {
     saveRules();
-    var insert = document.getElementById('rule_insert');
     initDOM();
-    insert && document.getElementById('rules').appendChild(insert);
 }
 
 function deleteRule(id) {
     var tar = document.querySelector('[data-id="' + id + '"]');
     tar && tar.parentNode.removeChild(tar);
     saveRules();
-    var insert = document.getElementById('rule_insert');
     initDOM();
-    insert && document.getElementById('rules').appendChild(insert);
-    // var tar = document.querySelector('[data-id="' + id + '"]');
-    // tar && tar.parentNode.removeChild(tar);
-    // saveRules(true);
-    // var insert = document.getElementById('rule_insert');
-    // initDOM();
-    // insert && document.getElementById('rules').appendChild(insert);
+}
+
+function deleteDecorator(e) {
+    var id = e.currentTarget.parentNode.dataset['id'];
+    deleteRule(id);
 }
 
 function saveRules() {
@@ -91,31 +87,12 @@ function saveRules() {
 
 function initDOM() {
     var rules = document.getElementById('rules');
+    var insert = document.getElementById('rule_insert');
     var userSettings = loadFromStore();
     rules.innerHTML = dataToDOM(userSettings);
+    insert && document.getElementById('rules').appendChild(insert);
 
     rebindEvent();
-    // var rules = document.getElementById('rules');
-    // var userSettings = JSON.parse(localStorage.getItem('userSettings')) || [];
-    // var tpl = '';
-    // userSettings.forEach(function (item) {
-    //     tpl += tplListItem(item);
-    // });
-    // rules.innerHTML = tpl;
-    //
-    // bindListEvents();
-    //
-    // function bindListEvents() {
-    //     Array.from(rules.querySelectorAll('li')).forEach(function (item) {
-    //         var id = item.dataset['id'];
-    //         item.querySelector('[btn-modify]').addEventListener('click', function () {
-    //             modifyRule();
-    //         });
-    //         item.querySelector('[btn-delete]').addEventListener('click', function () {
-    //             deleteRule(id);
-    //         });
-    //     });
-    // }
 }
 
 function dataFromDOM() {
@@ -130,6 +107,7 @@ function dataFromDOM() {
     return (lis.map(function (item) {
         return {
             id: item.dataset['id'],
+            enabled: item.querySelector('[name=enabled]').checked,
             regex: item.querySelector('[name=regex]').value,
             url: item.querySelector('[name=url]').value,
         };
@@ -155,7 +133,7 @@ function loadFromStore() {
         userSettings = [];
     }
     if (!Array.isArray(userSettings)) {
-        if ('[object Object]' === userSettings.toString()) {
+        if ('[object Object]' === Object.prototype.toString.call(userSettings)) {
             userSettings = [userSettings];
         } else {
             userSettings = [];
@@ -182,34 +160,46 @@ function rebindEvent() {
             var id = item.dataset['id'];
             var $modify = item.querySelector('[btn-modify]');
             var $delete = item.querySelector('[btn-delete]');
+            var $enable = item.querySelector('[checkbox-enabled]');
 
-            $modify.removeEventListener('click');
-            $delete.removeEventListener('click');
+            $modify.removeEventListener('click', modifyRule);
+            $delete.removeEventListener('click', deleteDecorator);
+            $enable.removeEventListener('click', modifyRule);
 
-            $modify.addEventListener('click', function () {
-                modifyRule();
-            });
-            $delete.addEventListener('click', function () {
-                deleteRule(id);
-            });
+            $modify.addEventListener('click', modifyRule);
+            $delete.addEventListener('click', deleteDecorator);
+            $enable.addEventListener('click', modifyRule);
         });
     }
 }
 
 function tplListItem(values) {
-    values = values || {};
-    return (
+    var tplTxt = (
         '<li data-id="${id}" item-rules>' +
+            '<input type="checkbox" name="enabled" checkbox-enabled ${enabled}>' +
             '<label>' +
                 '<span>规则</span>' +
-                '<input name="regex" type="text" value="${regex}"/>' +
+                '<input type="text" name="regex" value="${regex}"/>' +
             '</label>' +
             '<label>' +
                 '<span>行为</span>' +
-                '<input name="url" type="text" value="${url}"/>' +
+                '<input type="text" name="url" value="${url}"/>' +
             '</label>' +
             '<button btn-modify>编辑</button>' +
             '<button btn-delete>删除</button>' +
         '</li>'
-    ).replace(/\${id}/, values['id']).replace(/\${regex}/, values['regex']).replace(/\${url}/, values['url']);
+    );
+    values = values || {};
+
+    for (var i in values) {
+        if (values.hasOwnProperty(i)) {
+            var item = values[i];
+            if ('enabled' === i) {
+                item = values[i] ? 'checked' : '';
+            }
+            tplTxt = tplTxt.replace(new RegExp('\\${' + i + '}', 'g'), item);
+        }
+    }
+
+    return tplTxt;//.replace(/\${id}/, values['id']).replace(/\${regex}/, values['regex']).replace(/\${url}/, values['url']);
 }
