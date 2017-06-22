@@ -14,7 +14,7 @@ function modifyHeader(_headers, _url) {
     var userSettings = JSON.parse(localStorage.getItem('userSettings')) || [];
 
     for (var i = 0, item; item = userSettings[i]; ++i) {
-        if (new RegExp(item['regex']).test(_url)) {
+        if (item['enabled'] && 'change_referrer' === item['method'] && new RegExp(item['regex']).test(_url)) {
             var modified = false;
 
             _headers.forEach(function (it) {

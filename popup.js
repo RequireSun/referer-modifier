@@ -1,17 +1,6 @@
 /**
  * Created by kelvinsun on 2017/6/17.
  */
-// document.getElementById('submit').addEventListener('click', function () {
-    // var regex = document.getElementById('regex').value;
-    // var url = document.getElementById('url').value;
-    //
-    // var userSettings = JSON.parse(localStorage.getItem('userSettings')) || [];
-    // userSettings.push({
-    //     regex: regex,
-    //     url: url,
-    // });
-    // localStorage.setItem('userSettings', JSON.stringify(userSettings));
-// });
 
 initDOM();
 
@@ -108,6 +97,7 @@ function dataFromDOM() {
         return {
             id: item.dataset['id'],
             enabled: item.querySelector('[name=enabled]').checked,
+            method: item.querySelector('[name=method]').value,
             regex: item.querySelector('[name=regex]').value,
             url: item.querySelector('[name=url]').value,
         };
@@ -183,6 +173,10 @@ function tplListItem(values) {
             '</label>' +
             '<label>' +
                 '<span>行为</span>' +
+                '<select name="method">' +
+                    '<option value="change_referrer" ${checked_change_referrer}>修改 referrer</option>' +
+                    '<option value="add_query_parameter" ${checked_add_query_parameter}>为 query 增加参数</option>' +
+                '</select>' +
                 '<input type="text" name="url" value="${url}"/>' +
             '</label>' +
             '<button btn-modify>编辑</button>' +
@@ -193,11 +187,18 @@ function tplListItem(values) {
 
     for (var i in values) {
         if (values.hasOwnProperty(i)) {
+            var key  = i;
             var item = values[i];
-            if ('enabled' === i) {
-                item = values[i] ? 'checked' : '';
+            switch (i) {
+                case 'enabled':
+                    item = values[i] ? 'checked' : '';
+                    break;
+                case 'method':
+                    key = 'checked_' + values[i],
+                    item = 'selected';
+                    break;
             }
-            tplTxt = tplTxt.replace(new RegExp('\\${' + i + '}', 'g'), item);
+            tplTxt = tplTxt.replace(new RegExp('\\${' + key + '}', 'g'), item);
         }
     }
 
