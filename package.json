@@ -1,0 +1,31 @@
+{
+  "name": "referer-modifier",
+  "version": "1.0.0",
+  "description": "none",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RequireSun/referer-modifier.git"
+  },
+  "keywords": [
+    "referer",
+    "modify",
+    "chrome"
+  ],
+  "author": "RequireSun <kelvinsen@outlook.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/RequireSun/referer-modifier/issues"
+  },
+  "homepage": "https://github.com/RequireSun/referer-modifier#readme",
+  "devDependencies": {
+    "babel-loader": "^7.1.0",
+    "vue": "^2.3.4",
+    "vue-loader": "^12.2.1",
+    "vuex": "^2.3.1",
+    "webpack": "^3.0.0"
+  }
+}
