@@ -1,7 +1,7 @@
 <template>
     <ul>
-        <li>123</li>
-        <!--<rule v-for="item in rules"></rule>-->
+        <!--<li>123</li>-->
+        <rule v-for="(item, index) in rules" :key="index"></rule>
     </ul>
 </template>
 
