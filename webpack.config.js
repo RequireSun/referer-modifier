@@ -7,6 +7,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+    devtool: '#source-map',
     entry: {
         popup: './src/popup.js',
         background: './src/background.js',
@@ -27,13 +28,23 @@ module.exports = {
             // query: {
             //     presets: [ 'es2015', ],
             //     plugins: ['transform-object-rest-spread'],
-            //     // plugins: [require('babel-plugin-syntax-object-rest-spread')],
-            //     // plugins: [require('babel-plugin-transform-object-rest-spread')],
             // },
         }, {
             test: /\.vue$/,
             loader: 'vue-loader',
-        },],
+        }, {
+            test: /\.css$/,
+            loader: 'style-loader!css-loader',
+        }, {
+            test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
+            loader: 'file-loader',
+        }, {
+            test: /\.(png|jpe?g|gif|svg)(\?\S*)?$/,
+            loader: 'file-loader',
+            query: {
+                name: '[name].[ext]?[hash]',
+            },
+        }],
     },
     plugins: [
         new webpack.optimize.OccurrenceOrderPlugin(),   // 根据调用次数分配 id
