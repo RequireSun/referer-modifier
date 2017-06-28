@@ -16,13 +16,24 @@ module.exports = {
         filename: '[name].js',
         chunkFilename: '[id].chunk.js',
         // publicPath: 'dist',
-        libraryTarget: 'umd',
+        // libraryTarget: 'umd',
     },
     module: {
-        rules: [
-            { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/, query: { presets: [ 'es2015', ], }, },
-            { test: /\.vue$/, loader: 'vue-loader', },
-        ],
+        rules: [{
+            test: /\.js$/,
+            loader: 'babel-loader',
+            exclude: /node_modules/,
+            // 这么写无法触达到 vue 模板里的 babel, 就改成 babelrc 了, 当然 vue-loader 应该有对应方法透传参数的, 但是没找到
+            // query: {
+            //     presets: [ 'es2015', ],
+            //     plugins: ['transform-object-rest-spread'],
+            //     // plugins: [require('babel-plugin-syntax-object-rest-spread')],
+            //     // plugins: [require('babel-plugin-transform-object-rest-spread')],
+            // },
+        }, {
+            test: /\.vue$/,
+            loader: 'vue-loader',
+        },],
     },
     plugins: [
         new webpack.optimize.OccurrenceOrderPlugin(),   // 根据调用次数分配 id
