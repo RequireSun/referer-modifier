@@ -1,0 +1,7 @@
+{
+  "storage_key": "userRules",
+  "methods": {
+    "change_referrer": "修改 referrer",
+    "add_query_parameter": "为 query 增加参数"
+  }
+}

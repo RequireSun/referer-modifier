@@ -1,20 +1,15 @@
 /**
  * Created by kelvinsun on 2017/6/28.
  */
-
-export const STORAGE_KEY = 'userRules';
-const CONFIG_METHOD = {
-    change_referrer: '修改 referrer',
-    add_query_parameter: '为 query 增加参数',
-};
+import { methods, storage_key, } from '../CONFIG.json';
 
 if (-1 < navigator.userAgent.indexOf('PhantomJS')) {
     window.localStorage.clear();
 }
 
 export const state = {
-    CONFIG_METHOD,
-    rules: JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]'),
+    CONFIG_METHOD: methods,
+    rules: JSON.parse(window.localStorage.getItem(storage_key) || '[]'),
 };
 
 export const mutations = {

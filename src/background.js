@@ -1,25 +1,27 @@
+import * as CONFIG from './CONFIG.json';
+
 chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
     var url = details.url;
     var headers = details.requestHeaders;
 
-    console.log('start request url:', url);
+    // console.log('start request url:', url);
     return modifyHeader(headers, url);
 }, {
     urls : ["<all_urls>"]
 }, ["requestHeaders", "blocking"]);
 
 function modifyHeader(_headers, _url) {
-    var blockingResponse = {};
+    const blockingResponse = {};
 
-    var userSettings = JSON.parse(localStorage.getItem('userSettings')) || [];
+    let userSettings = JSON.parse(localStorage.getItem(CONFIG['storage_key'])) || [];
 
-    for (var i = 0, item; item = userSettings[i]; ++i) {
+    for (let i = 0, item; item = userSettings[i]; ++i) {
         if (item['enabled'] && 'change_referrer' === item['method'] && new RegExp(item['regex']).test(_url)) {
-            var modified = false;
+            let modified = false;
 
             _headers.forEach(function (it) {
                 if ('Referer' === it['name']) {
-                    it['value'] = item['url'];
+                    it['value'] = item['content'];
                     modified = true;
                 }
             });
@@ -32,6 +34,9 @@ function modifyHeader(_headers, _url) {
             break;
         }
     }
+
+    blockingResponse.requestHeaders = _headers;
+    return blockingResponse;
 
     // var isXForward = false;
     // var isReferer = false;
@@ -86,7 +91,4 @@ function modifyHeader(_headers, _url) {
     //
     //     isUserAgent = true;
     // }
-
-    console.log(blockingResponse.requestHeaders = _headers);
-    return blockingResponse;
 }

@@ -13,9 +13,14 @@
 		"<all_urls>"
 	],
 
+	"icons": {
+		"16": "icon16.png",
+		"48": "icon64.png",
+		"128": "icon.png"
+	},
+
 	"browser_action": {
 		"default_title": "Change request referer",
-		"default_icon": "icon.png",
 		"default_popup": "dist/popup.html"
 	},
 
