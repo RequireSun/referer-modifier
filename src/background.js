@@ -16,7 +16,7 @@
 //     let userSettings = JSON.parse(localStorage.getItem(CONFIG['storage_key'])) || [];
 //
 //     for (let i = 0, item; item = userSettings[i]; ++i) {
-//         if (item['enabled'] && 'change_referrer' === item['method'] && new RegExp(item['regex']).test(_url)) {
+//         if (item['enabled'] && 'change_referrer' === item['behavior'] && new RegExp(item['regex']).test(_url)) {
 //             let modified = false;
 //
 //             _headers.forEach(function (it) {

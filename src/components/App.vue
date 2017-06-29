@@ -1,26 +1,47 @@
 <template>
     <div>
-        <el-tree :data="testData" :render-content="renderContent"></el-tree>
-        <ul>
-            <rule v-for="(rule, index) in rules" :key="rule.id" :rule="rule" :CONFIG_METHOD="CONFIG_METHOD"></rule>
+        <!--<el-tree :data="rules" :render-content="renderContent" node-key="id"></el-tree>-->
+        <rule v-for="(rule, index) in rules" :key="rule.id" :rule="rule" :CONFIG_BEHAVIOR="CONFIG_BEHAVIOR"></rule>
+        <div v-if="isAdd" ref="addForm">
+            <label>
+                <span>规则</span>
+                <input name="regex" type="text"/>
+            </label>
+            <label>
+                <select name="behavior">
+                    <option v-for="(val, key) in CONFIG_BEHAVIOR" :value="key">{{val}}</option>
+                    <!--<option value="change_referrer">修改 referrer</option>-->
+                    <!--<option value="add_query_parameter">为 query 增加参数</option>-->
+                </select>
+                <input name="content" type="text"/>
+            </label>
+            <el-button-group>
+                <el-button type="success" size="mini" icon="check" @click="doneAdd"></el-button>
+                <el-button type="danger" size="mini" icon="close" @click="isAdd = false"></el-button>
+            </el-button-group>
+        </div>
+        <el-button type="primary" icon="plus" @click="isAdd = true"></el-button>
+        <ul style="display: none;">
+            <rule v-for="(rule, index) in rules" :key="rule.id" :rule="rule" :CONFIG_BEHAVIOR="CONFIG_BEHAVIOR"></rule>
             <li v-if="isAdd" ref="addForm">
                 <label>
                     <span>规则</span>
                     <input name="regex" type="text"/>
                 </label>
                 <label>
-                    <select name="method">
-                        <option v-for="(val, key) in CONFIG_METHOD" :value="key">{{val}}</option>
+                    <select name="behavior">
+                        <option v-for="(val, key) in CONFIG_BEHAVIOR" :value="key">{{val}}</option>
                         <!--<option value="change_referrer">修改 referrer</option>-->
                         <!--<option value="add_query_parameter">为 query 增加参数</option>-->
                     </select>
                     <input name="content" type="text"/>
                 </label>
-                <button @click="doneAdd">确定</button>
-                <button @click="isAdd = false">取消</button>
+                <el-button-group>
+                    <el-button type="success" size="mini" @click="doneAdd" icon="check">确定</el-button>
+                    <el-button type="danger" size="mini" @click="isAdd = false" icon="close">取消</el-button>
+                </el-button-group>
             </li>
         </ul>
-        <button @click="isAdd = true">Add</button>
     </div>
 </template>
 
@@ -28,14 +49,14 @@
     import { mapMutations, } from 'vuex';
     import Rule from './Rule.vue';
 
+//    const pipe = {
+//        enabled: rules => rules.filter(item => item.enabled).map(item => item['id']),
+//    };
+
     export default {
         components: { Rule, },
         data () {
             return {
-                testData: [
-                    { id: 123, regex: '456', content: '789', method: 'change_referrer', },
-                    { id: 223, regex: '456', content: '789', method: 'change_referrer', },
-                ],
                 isAdd: false,
             };
         },
@@ -43,9 +64,12 @@
             rules () {
                 return this.$store.state.rules;
             },
-            CONFIG_METHOD () {
-                return this.$store.state.CONFIG_METHOD;
-            }
+            CONFIG_BEHAVIOR () {
+                return this.$store.state.CONFIG_BEHAVIOR;
+            },
+//            enabledId () {
+//                return pipe['enabled'](this.rules);
+//            },
         },
         methods: {
             ...mapMutations([
@@ -58,30 +82,27 @@
                     this.add({
                         id: Date.now(),
                         regex: root.querySelector('[name=regex]').value.trim(),
-                        method: root.querySelector('[name=method]').value.trim(),
+                        behavior: root.querySelector('[name=behavior]').value.trim(),
                         content: root.querySelector('[name=content]').value.trim(),
                     });
-//                    this.$store.commit('add', {
-//                        id: Date.now(),
-//                        regex: root.querySelector('[name=regex]').value.trim(),
-//                        method: root.querySelector('[name=method]').value.trim(),
-//                        content: root.querySelector('[name=content]').value.trim(),
-//                    });
                     this.isAdd = false;
                 }
             },
-            renderContent (h, { node, data, store }) {
-                return h(Rule, {
-                    props: {
-                        key: node.id,
-                        rule: node,
-                        CONFIG_METHOD: data.CONFIG_METHOD,
-                    },
-                });
-//                return (
-//                    <rule :key="node.id" :rule="node" :CONFIG_METHOD="CONFIG_METHOD"></rule>
-//                );
-            },
+//            handleCheckChange (data, checked, indeterminate) {
+//                this.edit(data['id'], { ...data, enabled: checked, });
+//            },
+//            renderContent (h, { node, data, store }) {
+//                return h(Rule, {
+//                    props: {
+//                        key: data.id,
+//                        rule: data,
+//                        CONFIG_BEHAVIOR: this.CONFIG_BEHAVIOR,
+//                    },
+//                });
+////                return (
+////                    <rule :key="node.id" :rule="node" :CONFIG_METHOD="CONFIG_METHOD"></rule>
+////                );
+//            },
         },
 //        data () {
 //            return {
