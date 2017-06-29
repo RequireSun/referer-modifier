@@ -1,5 +1,6 @@
 <template>
     <div>
+        <el-tree :data="testData" :render-content="renderContent"></el-tree>
         <ul>
             <rule v-for="(rule, index) in rules" :key="rule.id" :rule="rule" :CONFIG_METHOD="CONFIG_METHOD"></rule>
             <li v-if="isAdd" ref="addForm">
@@ -31,6 +32,10 @@
         components: { Rule, },
         data () {
             return {
+                testData: [
+                    { id: 123, regex: '456', content: '789', method: 'change_referrer', },
+                    { id: 223, regex: '456', content: '789', method: 'change_referrer', },
+                ],
                 isAdd: false,
             };
         },
@@ -64,6 +69,18 @@
 //                    });
                     this.isAdd = false;
                 }
+            },
+            renderContent (h, { node, data, store }) {
+                return h(Rule, {
+                    props: {
+                        key: node.id,
+                        rule: node,
+                        CONFIG_METHOD: data.CONFIG_METHOD,
+                    },
+                });
+//                return (
+//                    <rule :key="node.id" :rule="node" :CONFIG_METHOD="CONFIG_METHOD"></rule>
+//                );
             },
         },
 //        data () {
