@@ -1,11 +1,15 @@
 {
   "storage_key": "userRules",
   "behavior": {
-    "change_referrer": "change referrer",
-    "add_query_parameter": "add query parameter"
-  },
-  "behavior_style": {
-    "change_referrer": "primary",
-    "add_query_parameter": "success"
+    "change_referrer": {
+      "label": "change referrer",
+      "style": "primary",
+      "abbreviate": "ChRef"
+    },
+    "add_query_parameter": {
+      "label": "add query parameter",
+      "style": "success",
+      "abbreviate": "AddQPara"
+    }
   }
 }
