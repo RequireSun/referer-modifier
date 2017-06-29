@@ -17,7 +17,9 @@
         <el-col :span="20" class="list-content">
             <el-row>
                 <el-col :span="9" v-text="rule.regex"></el-col>
-                <el-col :span="6" v-text="CONFIG_BEHAVIOR[rule.behavior]"></el-col>
+                <el-col :span="6">
+                    <el-tag :type="behavior_style[rule.behavior]">{{CONFIG_BEHAVIOR[rule.behavior]}}</el-tag>
+                </el-col>
                 <el-col :span="9" v-text="rule.content"></el-col>
             </el-row>
         </el-col>
@@ -30,6 +32,7 @@
 
 <script>
     import { mapMutations, } from 'vuex';
+    import { behavior_style, } from '../CONFIG.json';
 
     export default {
         name: 'Rule',
@@ -40,6 +43,7 @@
                 regex: this.rule.regex,
                 behavior: this.rule.behavior,
                 content: this.rule.content,
+                behavior_style,
             };
         },
         methods: {

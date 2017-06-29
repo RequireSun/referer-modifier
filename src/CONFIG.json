@@ -3,5 +3,9 @@
   "behavior": {
     "change_referrer": "change referrer",
     "add_query_parameter": "add query parameter"
+  },
+  "behavior_style": {
+    "change_referrer": "primary",
+    "add_query_parameter": "success"
   }
 }

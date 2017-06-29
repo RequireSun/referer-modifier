@@ -15,14 +15,19 @@
     margin-top: 6px;
   }
   .list-content {
-    padding: 0 5px 0 0;
+    //padding: 0 5px 0 0;
 
     & .el-col {
-      text-indent: 5px;
+      padding: 0 5px;
 
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      & .el-tag {
+        display: inline-block;
+        width: 100%;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
   }
   .el-button:not(:active):not(:visited):not(:hover) {
