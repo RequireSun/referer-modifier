@@ -2,6 +2,7 @@
     <div class="container">
         <el-row class="list-item" style="margin-bottom: 6px; border-radius: 4px; background-color: #f2f6f8;">
             <el-col :span="6" :offset="18" class="container-button">
+                <el-button type="success" size="mini" class="fa fa-refresh" style="width: 22px;" @click="refresh"></el-button>
                 <el-button type="primary" size="mini" icon="plus" @click="isAdd = true"></el-button>
             </el-col>
         </el-row>
@@ -46,6 +47,7 @@
             ...mapMutations([
                 'add',
                 'edit',
+                'refresh',
             ]),
             doneAdd () {
                 if (this.isAdd) {

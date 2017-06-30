@@ -9,8 +9,21 @@ if (-1 < navigator.userAgent.indexOf('PhantomJS')) {
 
 export const state = {
     CONFIG_BEHAVIOR: behavior,
-    rules: JSON.parse(window.localStorage.getItem(storage_key) || '[]'),
+    rules: [], // JSON.parse(window.localStorage.getItem(storage_key) || '[]'),
 };
+
+const refreshFromLocalStorage = () => {
+    let res;
+    try {
+        res = JSON.parse(window.localStorage.getItem(storage_key) || '[]');
+    } catch (ex) {
+        res = [];
+    }
+    console.log('reload config from localStorage:', res);
+    return res;
+};
+
+state['rules'] = refreshFromLocalStorage();
 
 export const mutations = {
     add (state, { id, regex, behavior, content, }) {
@@ -23,7 +36,8 @@ export const mutations = {
     },
     delete (state, { id, }) {
         state.rules = state.rules.filter(item => id !== item['id']);
-        // const index = state.rules.findIndex(item => id === item['id']);
-        // -1 < index && state.rules.splice(index, 1);
     },
+    refresh (state) {
+        state.rules = refreshFromLocalStorage();
+    }
 };

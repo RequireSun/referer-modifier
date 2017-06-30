@@ -16,14 +16,14 @@
         </el-col>
         <el-col :span="20" class="list-content">
             <el-row>
-                <el-col :span="9" class="list-content-text" v-text="rule.regex"></el-col>
+                <el-col :span="9" class="list-content-text" v-text="rule.regex" :title="rule.regex"></el-col>
                 <el-col :span="6">
                     <el-tag :type="CONFIG_BEHAVIOR[rule.behavior]['style']"
                             :title="CONFIG_BEHAVIOR[rule.behavior]['label']">
                         {{CONFIG_BEHAVIOR[rule.behavior]['abbreviate']}}
                     </el-tag>
                 </el-col>
-                <el-col :span="9" class="list-content-text" v-text="rule.content"></el-col>
+                <el-col :span="9" class="list-content-text" v-text="rule.content" :title="rule.content"></el-col>
             </el-row>
         </el-col>
         <el-col :span="3" class="container-button" style="padding-top: 2px;">
