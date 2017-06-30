@@ -1,8 +1,8 @@
 <template>
-    <div class="container">
+    <div class="container" v-loading.body="isLoading">
         <el-row class="list-item" style="margin-bottom: 6px; border-radius: 4px; background-color: #f2f6f8;">
             <el-col :span="6" :offset="18" class="container-button">
-                <el-button type="success" size="mini" class="fa fa-refresh" style="width: 22px;" @click="refresh"></el-button>
+                <el-button type="success" size="mini" class="fa fa-refresh" style="width: 22px;" @click="doneRefresh"></el-button>
                 <el-button type="primary" size="mini" icon="plus" @click="isAdd = true"></el-button>
             </el-col>
         </el-row>
@@ -30,6 +30,7 @@
         data () {
             return {
                 isAdd: false,
+                isLoading: false,
                 regex: '',
                 behavior: '',
                 content: '',
@@ -53,6 +54,7 @@
                 if (this.isAdd) {
                     this.add({
                         id: Date.now(),
+                        enabled: true,
                         regex: this.regex.trim(),
                         behavior: this.behavior.trim(),
                         content: this.content.trim(),
@@ -64,6 +66,17 @@
                     this.isAdd = false;
                 }
             },
+            doneRefresh () {
+                let _t = Date.now();
+                this.isLoading = true;
+                this.refresh();
+                let _diff = 500 - (Date.now() - _t);
+                if (0 < _diff) {
+                    setTimeout(() => this.isLoading = false, _diff)
+                } else {
+                    this.isLoading = false;
+                }
+            }
         },
     };
 </script>

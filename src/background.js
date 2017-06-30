@@ -28,7 +28,7 @@ function modifyHeader(_headers, _url) {
             if (!modified) {
                 _headers.push({
                     name: 'Referer',
-                    value: item['url'],
+                    value: item['content'],
                 });
             }
             break;
