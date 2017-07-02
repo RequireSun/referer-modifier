@@ -4,8 +4,9 @@
 import { storage_key, } from '../CONFIG.json';
 
 const localStoragePlugin = store => {
-    store.subscribe((mutation, { rules, }) => {
-        window.localStorage.setItem(storage_key, JSON.stringify(rules));
+    // 暂时指定只放两个
+    store.subscribe((mutation, { rules, enabled, }) => {
+        window.localStorage.setItem(storage_key, JSON.stringify({ rules, enabled, }));
     });
 };
 

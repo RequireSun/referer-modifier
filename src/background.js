@@ -1,19 +1,26 @@
 import * as CONFIG from './CONFIG.json';
 
 chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
-    var url = details.url;
-    var headers = details.requestHeaders;
+    let userSettings;
+    try {
+        userSettings = JSON.parse(localStorage.getItem(CONFIG['storage_key']) || '{}') || {};
+    } catch (ex) {
+        userSettings = {};
+    }
+    if (userSettings['enabled'] && userSettings['rules'] && userSettings['rules'].length) {
+        let url = details.url;
+        let headers = details.requestHeaders;
 
-    // console.log('start request url:', url);
-    return modifyHeader(headers, url);
+        return modifyHeader(headers, url, userSettings['rules']);
+    } else {
+        return details;
+    }
 }, {
     urls : ["<all_urls>"]
 }, ["requestHeaders", "blocking"]);
 
-function modifyHeader(_headers, _url) {
+function modifyHeader(_headers, _url, userSettings) {
     const blockingResponse = {};
-
-    let userSettings = JSON.parse(localStorage.getItem(CONFIG['storage_key'])) || [];
 
     for (let i = 0, item; item = userSettings[i]; ++i) {
         if (item['enabled'] && 'change_referrer' === item['behavior'] && new RegExp(item['regex']).test(_url)) {

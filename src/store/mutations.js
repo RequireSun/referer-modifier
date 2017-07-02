@@ -10,20 +10,28 @@ if (-1 < navigator.userAgent.indexOf('PhantomJS')) {
 export const state = {
     CONFIG_BEHAVIOR: behavior,
     rules: [], // JSON.parse(window.localStorage.getItem(storage_key) || '[]'),
+    enabled: false,
 };
 
-const refreshFromLocalStorage = () => {
+const refreshFromLocalStorage = (store) => {
     let res;
     try {
-        res = JSON.parse(window.localStorage.getItem(storage_key) || '[]');
+        res = JSON.parse(window.localStorage.getItem(storage_key) || '{}');
     } catch (ex) {
-        res = [];
+        res = {};
     }
     console.log('reload config from localStorage:', res);
+
+    for (let i in res) {
+        if (res.hasOwnProperty(i)) {
+            store[i] = res[i];
+        }
+    }
+
     return res;
 };
 
-state['rules'] = refreshFromLocalStorage();
+refreshFromLocalStorage(state);
 
 export const mutations = {
     add (state, { id, regex, behavior, content, }) {
@@ -38,6 +46,9 @@ export const mutations = {
         state.rules = state.rules.filter(item => id !== item['id']);
     },
     refresh (state) {
-        state.rules = refreshFromLocalStorage();
+        refreshFromLocalStorage(state);
+    },
+    enabled (state, enabled) {
+        state.enabled = enabled;
     }
 };

@@ -1,18 +1,21 @@
 <template>
     <div class="container" v-loading.body="isLoading">
         <el-row class="list-item" style="margin-bottom: 6px; border-radius: 4px; background-color: #f2f6f8;">
-            <el-col :span="6" :offset="18" class="container-button">
+            <el-col :span="6">
+                <el-switch v-model="enabled" on-color="#13ce66" off-color="#ff4949" @change="doneEnabled"></el-switch>
+            </el-col>
+            <el-col :span="6" :offset="12" class="container-button">
                 <el-button type="success" size="mini" class="fa fa-refresh" style="width: 22px;" @click="doneRefresh"></el-button>
                 <el-button type="primary" size="mini" icon="plus" @click="isAdd = true"></el-button>
             </el-col>
         </el-row>
         <div v-if="isAdd" class="list-item list-item-edit">
-            <el-input placeholder="rule" ref="regex" v-model="regex">
-                <el-select placeholder="behavior" ref="behavior" v-model="behavior" slot="append">
+            <el-input placeholder="rule" ref="regex" v-model="addInput.regex">
+                <el-select placeholder="behavior" ref="behavior" v-model="addInput.behavior" slot="append">
                     <el-option v-for="(val, key) in CONFIG_BEHAVIOR" :key="key" :value="key" :label="val.label"></el-option>
                 </el-select>
             </el-input>
-            <el-input placeholder="content" v-model="content" class="mul-append">
+            <el-input placeholder="content" v-model="addInput.content" class="mul-append">
                 <el-button size="mini" slot="append" icon="check" @click="doneAdd"></el-button>
                 <el-button size="mini" slot="append" icon="close" @click="isAdd = false"></el-button>
             </el-input>
@@ -31,12 +34,17 @@
             return {
                 isAdd: false,
                 isLoading: false,
-                regex: '',
-                behavior: '',
-                content: '',
+                addInput: {
+                    regex: '',
+                    behavior: '',
+                    content: '',
+                },
             };
         },
         computed: {
+            enabled () {
+                return this.$store.state.enabled;
+            },
             rules () {
                 return this.$store.state.rules;
             },
@@ -55,14 +63,16 @@
                     this.add({
                         id: Date.now(),
                         enabled: true,
-                        regex: this.regex.trim(),
-                        behavior: this.behavior.trim(),
-                        content: this.content.trim(),
+                        regex: this.addInput.regex.trim(),
+                        behavior: this.addInput.behavior.trim(),
+                        content: this.addInput.content.trim(),
                     });
 
-                    this.regex= '';
-                    this.behavior= '';
-                    this.content= '';
+                    this.addInput = {
+                        regex: '',
+                        behavior: '',
+                        content: '',
+                    };
                     this.isAdd = false;
                 }
             },
@@ -76,7 +86,10 @@
                 } else {
                     this.isLoading = false;
                 }
-            }
+            },
+            doneEnabled (tarStatus) {
+                this.$store.commit('enabled', tarStatus);
+            },
         },
     };
 </script>
