@@ -21,12 +21,12 @@
 
 	"browser_action": {
 		"default_title": "Change request referer",
-		"default_popup": "dist/popup.html"
+		"default_popup": "popup.html"
 	},
 
     "background": { 
     	"scripts": [
-    		"dist/background.js"
+    		"background.js"
     	]
     }
 }

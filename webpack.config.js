@@ -5,6 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const TransferWebpackPlugin = require('transfer-webpack-plugin');
 
 module.exports = {
     devtool: '#source-map',
@@ -41,11 +43,14 @@ module.exports = {
         }, {
             test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
             loader: 'file-loader',
+            query: {
+                name: 'font/[name].[ext]?[hash]',
+            },
         }, {
             test: /\.(png|jpe?g|gif|svg)(\?\S*)?$/,
             loader: 'file-loader',
             query: {
-                name: '[name].[ext]?[hash]',
+                name: 'image/[name].[ext]?[hash]',
             },
         }],
     },
@@ -60,5 +65,12 @@ module.exports = {
             template: path.resolve(__dirname, 'src/popup.html'),
             chunks: [ 'popup', ],
         }),
+        // new TransferWebpackPlugin([
+        //     { from: 'src/image', to: 'image' },
+        // ]),
+        new CopyWebpackPlugin([
+            { from: 'src/manifest.json', to: 'manifest.json' },
+            { from: 'src/image/*.png', to: 'image/[name].png' },
+        ]),
     ],
 };
