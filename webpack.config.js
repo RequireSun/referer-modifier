@@ -6,10 +6,8 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-// const TransferWebpackPlugin = require('transfer-webpack-plugin');
 
 module.exports = {
-    devtool: '#source-map',
     entry: {
         popup: './src/popup.js',
         background: './src/background.js',
@@ -18,8 +16,6 @@ module.exports = {
         path: path.join(__dirname, 'dist'),
         filename: '[name].js',
         chunkFilename: '[id].chunk.js',
-        // publicPath: 'dist',
-        // libraryTarget: 'umd',
     },
     module: {
         rules: [{
@@ -65,9 +61,6 @@ module.exports = {
             template: path.resolve(__dirname, 'src/popup.html'),
             chunks: [ 'popup', ],
         }),
-        // new TransferWebpackPlugin([
-        //     { from: 'src/image', to: 'image' },
-        // ]),
         new CopyWebpackPlugin([
             { from: 'src/manifest.json', to: 'manifest.json' },
             { from: 'src/image/*.png', to: 'image/[name].png' },
