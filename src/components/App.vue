@@ -108,6 +108,9 @@
                 }
             },
             doneEnabled (tarStatus) {
+                chrome.browserAction.setIcon({
+                    path: tarStatus ? 'image/logo-run.png' : 'image/logo.png',
+                });
                 this.$store.commit('enabled', tarStatus);
             },
             doneValidate ({ regex, behavior, content, }) {
