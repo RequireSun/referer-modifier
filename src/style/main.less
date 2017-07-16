@@ -103,6 +103,10 @@ body {
       }
       & > .el-input-group__append {
         border-top-right-radius: 4px;
+
+        input {
+          border-top-left-radius: 0;
+        }
       }
     }
     &:last-of-type {
@@ -112,6 +116,9 @@ body {
       }
       & > .el-input-group__append {
         border-bottom-right-radius: 4px;
+        input {
+          border-bottom-left-radius: 0;
+        }
       }
     }
   }
@@ -123,5 +130,39 @@ body {
     &:last-of-type > input {
       border-bottom-right-radius: 0;
     }
+
+    .el-select {
+      margin: -10px -11px;
+
+      input[type=text] {
+        height: 34px;
+        margin-top: 4px;
+        margin-bottom: 4px;
+      }
+    }
   }
+}
+
+.border-danger {
+  z-index: 1;
+
+  //input[type=text] {
+  //  background: #FF4949;
+  //}
+  input[type=text] {
+    box-shadow: 0px 0px 0px 1px #FF4949 inset;
+  }
+  //input[type=text] {
+  //  border-color: #FF4949 !important;
+  //}
+  //&.el-select {
+  //  input[type=text] {
+  //    &, &:hover {
+  //      border-top-width: 1px;
+  //      border-top-style: solid;
+  //      border-bottom-width: 1px;
+  //      border-bottom-style: solid;
+  //    }
+  //  }
+  //}
 }

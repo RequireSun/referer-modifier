@@ -14,9 +14,9 @@
 	],
 
 	"icons": {
-		"16": "image/icon16.png",
-		"48": "image/icon64.png",
-		"128": "image/icon.png"
+		"16": "image/logo.png",
+		"48": "image/logo.png",
+		"128": "image/logo.png"
 	},
 
 	"browser_action": {

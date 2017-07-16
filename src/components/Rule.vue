@@ -1,13 +1,14 @@
 <template>
     <div v-if="isEdit" class="list-item list-item-edit">
-        <el-input placeholder="rule" ref="regex" v-model="regex">
-            <el-select placeholder="behavior" ref="behavior" v-model="behavior" slot="append">
+        <el-input placeholder="rule" ref="regex" v-model="editInput.regex" :class="stateValidate.regex ? '' : 'border-danger'">
+            <el-select placeholder="behavior" ref="behavior" v-model="editInput.behavior" slot="append"
+                       :class="stateValidate.behavior ? '' : 'border-danger'">
                 <el-option v-for="(val, key) in CONFIG_BEHAVIOR" :key="key" :value="key" :label="val.label"></el-option>
             </el-select>
         </el-input>
-        <el-input placeholder="content" v-model="content" class="mul-append">
+        <el-input placeholder="content" v-model="editInput.content" :class="'mul-append' + (stateValidate.content ? '' : ' border-danger')">
             <el-button size="mini" slot="append" icon="check" @click="doneEdit"></el-button>
-            <el-button size="mini" slot="append" icon="close" @click="isEdit = false"></el-button>
+            <el-button size="mini" slot="append" icon="close" @click="cancelEdit"></el-button>
         </el-input>
     </div>
     <el-row v-else class="list-item">
@@ -18,7 +19,8 @@
             <el-row>
                 <el-col :span="9" class="list-content-text" v-text="rule.regex" :title="rule.regex"></el-col>
                 <el-col :span="6">
-                    <el-tag :type="CONFIG_BEHAVIOR[rule.behavior]['style']"
+                    <el-tag v-if="CONFIG_BEHAVIOR && CONFIG_BEHAVIOR[rule.behavior]"
+                            :type="CONFIG_BEHAVIOR[rule.behavior]['style']"
                             :title="CONFIG_BEHAVIOR[rule.behavior]['label']">
                         {{CONFIG_BEHAVIOR[rule.behavior]['abbreviate']}}
                     </el-tag>
@@ -27,8 +29,16 @@
             </el-row>
         </el-col>
         <el-col :span="3" class="container-button" style="padding-top: 2px;">
+            <el-popover ref="popover-delete" placement="left" v-model="visibleDelete"
+                        trigger="click">
+                <p>你确定要删除这条规则么？</p>
+                <div style="text-align: right; margin: 0;">
+                    <el-button size="mini" type="text" @click="visibleDelete = false">取消</el-button>
+                    <el-button size="mini" type="danger" @click="doneDelete">确定</el-button>
+                </div>
+            </el-popover>
             <el-button type="warning" size="mini" :plain="true" @click="isEdit = true" icon="edit"></el-button>
-            <el-button type="danger" size="mini" :plain="true" @click="doneDelete" icon="delete"></el-button>
+            <el-button type="danger" size="mini" :plain="true" v-popover:popover-delete icon="delete"></el-button>
         </el-col>
     </el-row>
 </template>
@@ -40,30 +50,56 @@
         name: 'Rule',
         props: [ 'rule', 'CONFIG_BEHAVIOR' ],
         data () {
-            return {
-                isEdit: false,
-                regex: this.rule.regex,
-                behavior: this.rule.behavior,
-                content: this.rule.content,
-            };
+            return this.getInitialState();
         },
         methods: {
             ...mapMutations([
                 'edit',
                 'delete',
             ]),
+            getInitialState () {
+                return {
+                    isEdit: false,
+                    visibleDelete: false,
+                    stateValidate: {
+                        regex: true,
+                        behavior: true,
+                        content: true,
+                    },
+                    editInput: {
+                        regex: this.rule.regex,
+                        behavior: this.rule.behavior,
+                        content: this.rule.content,
+                    },
+                };
+            },
             doneEdit () {
+                if (!this.doneValidate({
+                        regex: this.editInput.regex.trim(),
+                        behavior: this.editInput.behavior.trim(),
+                        content: this.editInput.content.trim(),
+                    })) {
+                    this.$message({
+                        showClose: true,
+                        message: 'Please fill out the form completely',
+                        type: 'warning',
+                    });
+                    return;
+                }
                 this.edit({
                     id: this.rule.id,
                     value: {
                         id: this.rule.id,
                         enabled: this.rule.enabled,
-                        regex: this.regex.trim(),
-                        behavior: this.behavior.trim(),
-                        content: this.content.trim(),
+                        regex: this.editInput.regex.trim(),
+                        behavior: this.editInput.behavior.trim(),
+                        content: this.editInput.content.trim(),
                     },
                 });
                 this.isEdit = false;
+            },
+            cancelEdit () {
+                Object.assign(this, this.getInitialState());
             },
             doneEnabled (e) {
                 if (this.isEdit) {
@@ -85,6 +121,28 @@
                     id: this.rule.id,
                 });
             },
+            doneValidate ({ regex, behavior, content, }) {
+                let res = true;
+                if (!regex) {
+                    this.stateValidate.regex = false;
+                    res = false;
+                } else {
+                    this.stateValidate.regex = true;
+                }
+                if (!behavior) {
+                    this.stateValidate.behavior = false;
+                    res = false;
+                } else {
+                    this.stateValidate.behavior = true;
+                }
+                if (!content) {
+                    this.stateValidate.content = false;
+                    res = false;
+                } else {
+                    this.stateValidate.content = true;
+                }
+                return res;
+            }
         },
     };
 </script>
