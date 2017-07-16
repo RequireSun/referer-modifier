@@ -8,15 +8,9 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
         userSettings = {};
     }
 
-    if (userSettings['enabled']) {
-        chrome.browserAction.setIcon({
-            path: 'image/logo-run.png',
-        });
-    } else {
-        chrome.browserAction.setIcon({
-            path: 'image/logo.png',
-        });
-    }
+    chrome.browserAction.setIcon({
+        path: userSettings['enabled'] ? CONFIG['icons']['enabled'] : CONFIG['icons']['disabled'],
+    });
 
     if (userSettings['enabled'] && userSettings['rules'] && userSettings['rules'].length) {
         let url = details.url;

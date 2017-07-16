@@ -29,6 +29,7 @@
 <script>
     import { mapMutations, } from 'vuex';
     import Rule from './Rule.vue';
+    import * as CONFIG from '../CONFIG.json';
 
     export default {
         components: { Rule, },
@@ -109,7 +110,7 @@
             },
             doneEnabled (tarStatus) {
                 chrome.browserAction.setIcon({
-                    path: tarStatus ? 'image/logo-run.png' : 'image/logo.png',
+                    path: tarStatus ? CONFIG['icons']['enabled'] : CONFIG['icons']['disabled'],
                 });
                 this.$store.commit('enabled', tarStatus);
             },
