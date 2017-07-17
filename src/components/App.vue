@@ -117,7 +117,7 @@
                     value: regex,
                 }, {
                     name: 'behavior',
-                    type: 'text',
+                    type: 'behavior',
                     value: behavior,
                 }, {
                     name: 'content',
@@ -132,7 +132,7 @@
                 }
 
                 if (!validRes['result']) {
-                    let isIncorrect false;
+                    let isIncorrect = false;
 
                     validRes['properties'].forEach(item => {
                         this.stateValidate[item['name']] = false;

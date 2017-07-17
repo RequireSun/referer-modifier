@@ -1,3 +1,5 @@
+import CONFIG from '../CONFIG.json';
+
 export default function validate (formData = []) {
     let res = {
         result: true,
@@ -22,6 +24,21 @@ export default function validate (formData = []) {
                         type: 'empty',
                     });
                 } else if (!/^http(?:s)?:\/\//.test(item['value'])) {
+                    res['result'] = false;
+                    res['properties'].push({
+                        name: item['name'],
+                        type: 'format',
+                    });
+                }
+                break;
+            case 'behavior':
+                if (!item['value']) {
+                    res['result'] = false;
+                    res['properties'].push({
+                        name: item['name'],
+                        type: 'empty',
+                    });
+                } else if (!CONFIG.behavior[item['value']]) {
                     res['result'] = false;
                     res['properties'].push({
                         name: item['name'],
