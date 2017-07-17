@@ -4,6 +4,10 @@
     "enabled": "image/logo-run.png",
     "disabled": "image/logo16.png"
   },
+  "notice_texts": {
+    "field_empty": "Please fill out the form completely.",
+    "field_incorrect": "Please enter in the correct format."
+  },
   "behavior": {
     "change_referrer": {
       "label": "change referrer",

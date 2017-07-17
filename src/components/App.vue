@@ -30,6 +30,7 @@
     import { mapMutations, } from 'vuex';
     import Rule from './Rule.vue';
     import * as CONFIG from '../CONFIG.json';
+    import validate from '../common/util.js';
 
     export default {
         components: { Rule, },
@@ -73,11 +74,6 @@
                             behavior: this.addInput.behavior.trim(),
                             content: this.addInput.content.trim(),
                         })) {
-                        this.$message({
-                            showClose: true,
-                            message: 'Please fill out the form completely',
-                            type: 'warning',
-                        });
                         return;
                     }
 
@@ -115,26 +111,41 @@
                 this.$store.commit('enabled', tarStatus);
             },
             doneValidate ({ regex, behavior, content, }) {
-                let res = true;
-                if (!regex) {
-                    this.stateValidate.regex = false;
-                    res = false;
-                } else {
-                    this.stateValidate.regex = true;
+                let validRes = validate([{
+                    name: 'regex',
+                    type: 'regex',
+                    value: regex,
+                }, {
+                    name: 'behavior',
+                    type: 'text',
+                    value: behavior,
+                }, {
+                    name: 'content',
+                    type: 'url',
+                    value: content,
+                }]);
+
+                for (let i in this.stateValidate) {
+                    if (this.stateValidate.hasOwnProperty(i)) {
+                        this.stateValidate[i] = true;
+                    }
                 }
-                if (!behavior) {
-                    this.stateValidate.behavior = false;
-                    res = false;
-                } else {
-                    this.stateValidate.behavior = true;
+
+                if (!validRes['result']) {
+                    let isIncorrect false;
+
+                    validRes['properties'].forEach(item => {
+                        this.stateValidate[item['name']] = false;
+                        'format' === item['type'] && (isIncorrect = true);
+                    });
+
+                    this.$message({
+                        showClose: true,
+                        message: CONFIG['notice_texts'][isIncorrect ? 'field_incorrect' : 'field_empty'],
+                        type: 'warning',
+                    });
                 }
-                if (!content) {
-                    this.stateValidate.content = false;
-                    res = false;
-                } else {
-                    this.stateValidate.content = true;
-                }
-                return res;
+                return validRes['result'];
             }
         },
     };
